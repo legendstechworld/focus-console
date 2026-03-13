@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Focus Console</title>
+
+<style>
+
+body{
+font-family:Arial;
+text-align:center;
+background:#111;
+color:white;
+}
+
+button{
+
+width:130px;
+height:45px;
+margin:6px;
+font-size:14px;
+background:#333;
+color:white;
+border:none;
+border-radius:6px;
+
+}
+
+button:hover{
+background:#555;
+}
+
+#timer{
+
+font-size:40px;
+margin:20px;
+
+}
+
+select{
+height:35px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Focus Console</h2>
+
+
+<h3>Counter</h3>
+
+<button onclick="increment()">+1 Focus</button>
+
+<hr>
+
+
+<h3>Stopwatch</h3>
+
+<div id="timer">0</div>
+
+<button onclick="start()">Start</button>
+<button onclick="pause()">Pause</button>
+<button onclick="end()">End</button>
+
+<hr>
+
+
+<h3>Reverse Pomodoro</h3>
+
+<select id="pomodoroTime">
+
+<option value="60">1 min</option>
+<option value="300">5 min</option>
+<option value="900">15 min</option>
+<option value="1800">30 min</option>
+<option value="2700">45 min</option>
+<option value="3600">60 min</option>
+<option value="7200">2 hr</option>
+<option value="10800">3 hr</option>
+<option value="14400">4 hr</option>
+
+</select>
+
+<br><br>
+
+<button onclick="startPomodoro()">Start</button>
+<button onclick="endPomodoro()">End</button>
+
+
+
+<script>
+
+const API="https://script.google.com/macros/s/AKfycbwOW24Kg7pFEeL_bAQyIRMqUqS6Y4_jv8QRpco7_MFS2t0avUckm1ppFUc7NS-4ONJABw/exec"
+
+
+
+function increment(){
+
+fetch(API+"?action=increment")
+
+}
+
+
+
+let startTime
+let interval
+let elapsed=0
+
+function start(){
+
+startTime=new Date()
+
+interval=setInterval(()=>{
+
+elapsed++
+
+document.getElementById("timer").innerText=elapsed
+
+},1000)
+
+}
+
+function pause(){
+
+clearInterval(interval)
+
+}
+
+function end(){
+
+clearInterval(interval)
+
+let endTime=new Date()
+
+fetch(API+"?action=stopwatch"
++"&start="+startTime
++"&end="+endTime
++"&duration="+elapsed)
+
+elapsed=0
+
+document.getElementById("timer").innerText=0
+
+}
+
+
+
+let pomoStart
+let target
+
+
+function startPomodoro(){
+
+target=document.getElementById("pomodoroTime").value
+
+pomoStart=new Date()
+
+alert("Pomodoro Started")
+
+}
+
+
+
+function endPomodoro(){
+
+let now=new Date()
+
+let actual=Math.floor((now-pomoStart)/1000)
+
+fetch(API+"?action=pomodoro"
++"&target="+target
++"&actual="+actual)
+
+alert("Session Logged")
+
+}
+
+
+</script>
+
+</body>
+
+</html>
