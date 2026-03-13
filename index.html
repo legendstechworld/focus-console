@@ -29,7 +29,6 @@ gap:4px;
 }
 
 button{
-
 height:22px;
 font-size:11px;
 background:#333;
@@ -38,7 +37,6 @@ border:none;
 border-radius:3px;
 padding:2px 6px;
 cursor:pointer;
-
 }
 
 button:hover{
@@ -81,7 +79,7 @@ C:
 
 <div class="block">
 SW:
-<span class="timer" id="timer">0</span>
+<span class="timer" id="timer">00:00:00</span>
 <button onclick="start()">S</button>
 <button onclick="pause()">P</button>
 <button onclick="end()">E</button>
@@ -89,7 +87,7 @@ SW:
 
 <div class="block">
 RP:
-<span class="pomo" id="pomodoroTimer">0</span>
+<span class="pomo" id="pomodoroTimer">00:00:00</span>
 
 <select id="pomodoroTime">
 <option value="60">1m</option>
@@ -98,6 +96,8 @@ RP:
 <option value="1800">30m</option>
 <option value="2700">45m</option>
 <option value="3600">60m</option>
+<option value="7200">2h</option>
+<option value="10800">3h</option>
 </select>
 
 <button onclick="startPomodoro()">S</button>
@@ -112,7 +112,25 @@ RP:
 
 const API="YOUR_SCRIPT_URL"
 
-/* COUNTER */
+
+/* ---------- TIME FORMAT ---------- */
+
+function formatTime(seconds){
+
+let h = Math.floor(seconds / 3600)
+let m = Math.floor((seconds % 3600) / 60)
+let s = seconds % 60
+
+h = h.toString().padStart(2,"0")
+m = m.toString().padStart(2,"0")
+s = s.toString().padStart(2,"0")
+
+return `${h}:${m}:${s}`
+
+}
+
+
+/* ---------- COUNTER ---------- */
 
 let focusCount=0
 
@@ -127,7 +145,7 @@ fetch(API+"?action=increment")
 }
 
 
-/* STOPWATCH */
+/* ---------- STOPWATCH ---------- */
 
 let startTime
 let interval
@@ -141,7 +159,7 @@ interval=setInterval(()=>{
 
 elapsed++
 
-document.getElementById("timer").innerText=elapsed
+document.getElementById("timer").innerText=formatTime(elapsed)
 
 },1000)
 
@@ -166,12 +184,12 @@ fetch(API+"?action=stopwatch"
 
 elapsed=0
 
-document.getElementById("timer").innerText=0
+document.getElementById("timer").innerText="00:00:00"
 
 }
 
 
-/* REVERSE POMODORO */
+/* ---------- REVERSE POMODORO ---------- */
 
 let pomoInterval
 let remaining
@@ -180,13 +198,13 @@ function startPomodoro(){
 
 remaining=parseInt(document.getElementById("pomodoroTime").value)
 
-document.getElementById("pomodoroTimer").innerText=remaining
+document.getElementById("pomodoroTimer").innerText=formatTime(remaining)
 
 pomoInterval=setInterval(()=>{
 
 remaining--
 
-document.getElementById("pomodoroTimer").innerText=remaining
+document.getElementById("pomodoroTimer").innerText=formatTime(remaining)
 
 if(remaining<=0){
 
@@ -212,7 +230,7 @@ fetch(API+"?action=pomodoro"
 +"&target="+target
 +"&actual="+actual)
 
-document.getElementById("pomodoroTimer").innerText=0
+document.getElementById("pomodoroTimer").innerText="00:00:00"
 
 }
 
