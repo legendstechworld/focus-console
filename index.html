@@ -1,29 +1,43 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
-<title>Focus Console</title>
+<title>Focus HUD</title>
 
 <style>
 
 body{
-font-family:Arial;
-text-align:center;
+margin:0;
 background:#111;
 color:white;
+font-family:Arial;
+}
+
+.container{
+display:flex;
+flex-wrap:wrap;
+justify-content:space-between;
+align-items:center;
+padding:5px;
+font-size:12px;
+}
+
+.block{
+display:flex;
+align-items:center;
+gap:4px;
 }
 
 button{
 
-width:120px;
-height:40px;
-margin:6px;
-font-size:14px;
+height:22px;
+font-size:11px;
 background:#333;
 color:white;
 border:none;
-border-radius:6px;
+border-radius:3px;
+padding:2px 6px;
+cursor:pointer;
 
 }
 
@@ -31,106 +45,74 @@ button:hover{
 background:#555;
 }
 
-#timer{
-
-font-size:36px;
-margin:10px;
-
-}
-
-#countDisplay{
-
-font-size:28px;
-margin:10px;
-
-}
-
-#pomodoroTimer{
-
-font-size:28px;
-margin:10px;
-
-}
-
 select{
-height:35px;
+height:22px;
+font-size:11px;
 }
 
-hr{
-margin:25px;
-border-color:#444;
+.counter{
+font-weight:bold;
+color:#4CAF50;
+}
+
+.timer{
+font-weight:bold;
+color:#FF9800;
+}
+
+.pomo{
+font-weight:bold;
+color:#00BCD4;
 }
 
 </style>
 
 </head>
 
-
 <body>
 
-<h2>Focus Console</h2>
+<div class="container">
 
-<button onclick="openMini()">Mini Mode</button>
+<div class="block">
+C:
+<span class="counter" id="countDisplay">0</span>
+<button onclick="increment()">+</button>
+</div>
 
-<hr>
+<div class="block">
+SW:
+<span class="timer" id="timer">0</span>
+<button onclick="start()">S</button>
+<button onclick="pause()">P</button>
+<button onclick="end()">E</button>
+</div>
 
-
-<h3>Counter</h3>
-
-<div id="countDisplay">0</div>
-
-<button onclick="increment()">+1 Focus</button>
-
-
-<hr>
-
-
-<h3>Stopwatch</h3>
-
-<div id="timer">0</div>
-
-<button onclick="start()">Start</button>
-<button onclick="pause()">Pause</button>
-<button onclick="end()">End</button>
-
-
-<hr>
-
-
-<h3>Reverse Pomodoro</h3>
-
-<div id="pomodoroTimer">0</div>
+<div class="block">
+RP:
+<span class="pomo" id="pomodoroTimer">0</span>
 
 <select id="pomodoroTime">
-
-<option value="60">1 min</option>
-<option value="300">5 min</option>
-<option value="900">15 min</option>
-<option value="1800">30 min</option>
-<option value="2700">45 min</option>
-<option value="3600">60 min</option>
-<option value="7200">2 hr</option>
-<option value="10800">3 hr</option>
-<option value="14400">4 hr</option>
-
+<option value="60">1m</option>
+<option value="300">5m</option>
+<option value="900">15m</option>
+<option value="1800">30m</option>
+<option value="2700">45m</option>
+<option value="3600">60m</option>
 </select>
 
-<br><br>
+<button onclick="startPomodoro()">S</button>
+<button onclick="endPomodoro()">E</button>
 
-<button onclick="startPomodoro()">Start</button>
-<button onclick="endPomodoro()">End</button>
+</div>
 
+</div>
 
 
 <script>
 
 const API="YOUR_SCRIPT_URL"
 
-
-
-/* -------------------
-COUNTER
--------------------*/
+/* COUNTER */
 
 let focusCount=0
 
@@ -145,11 +127,7 @@ fetch(API+"?action=increment")
 }
 
 
-
-/* -------------------
-STOPWATCH
--------------------*/
-
+/* STOPWATCH */
 
 let startTime
 let interval
@@ -193,15 +171,10 @@ document.getElementById("timer").innerText=0
 }
 
 
-
-/* -------------------
-REVERSE POMODORO
--------------------*/
-
+/* REVERSE POMODORO */
 
 let pomoInterval
 let remaining
-
 
 function startPomodoro(){
 
@@ -227,8 +200,6 @@ alert("Pomodoro Complete")
 
 }
 
-
-
 function endPomodoro(){
 
 clearInterval(pomoInterval)
@@ -242,23 +213,6 @@ fetch(API+"?action=pomodoro"
 +"&actual="+actual)
 
 document.getElementById("pomodoroTimer").innerText=0
-
-}
-
-
-
-/* -------------------
-MINI FLOATING MODE
--------------------*/
-
-
-function openMini(){
-
-window.open(
-window.location.href,
-"focusMini",
-"width=900,height=120"
-)
 
 }
 
